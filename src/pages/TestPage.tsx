@@ -52,7 +52,7 @@ export default function TestPage() {
             table: tableName,
             status: 'エラー',
             count: 0,
-            error: err.message
+            error: err instanceof Error ? err.message : 'Unknown error'
           })
         }
       }
@@ -60,14 +60,14 @@ export default function TestPage() {
       setTables(tableResults)
       
     } catch (error) {
-      setConnectionStatus(`接続失敗: ${error.message}`)
+      setConnectionStatus(`接続失敗: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
   const createTestUser = async () => {
     try {
       // Auth用のユーザー作成
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { error: authError } = await supabase.auth.signUp({
         email: 'test@example.com',
         password: 'testpassword123'
       })
@@ -78,7 +78,7 @@ export default function TestPage() {
       }
       
       // usersテーブルにレコード作成
-      const { data: userData, error: userError } = await supabase
+      const { error: userError } = await supabase
         .from('users')
         .insert([
           {
@@ -99,7 +99,7 @@ export default function TestPage() {
       alert('テストユーザー作成成功!')
       
     } catch (error) {
-      alert(`テストユーザー作成失敗: ${error.message}`)
+      alert(`テストユーザー作成失敗: ${error instanceof Error ? error.message : 'Unknown error'}`)
     }
   }
 
